@@ -1,0 +1,317 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GrowMate | Student Growth Dashboard</title>
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Chart.js for Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+<div class="app-container">
+
+    <header class="topbar">
+        <a class="brand" href="#" aria-label="GrowMate home">
+            <span class="brand-icon">🌱</span>
+            <span>GrowMate</span>
+        </a>
+
+        <nav class="top-nav">
+            <button class="nav-btn active" data-page="dashboardPage">🏠 Dashboard</button>
+            <button class="nav-btn" data-page="plannerPage">📅 Planner & Activities</button>
+            <button class="nav-btn" data-page="goalsPage">🎯 Goals & Focus</button>
+        </nav>
+
+        <div class="profile-actions">
+            <button id="themeToggle" class="icon-btn" title="Toggle Dark Mode">🌙</button>
+        </div>
+    </header>
+
+    <main class="main-content">
+
+        <!-- DASHBOARD PAGE -->
+        <section class="page active-page" id="dashboardPage">
+
+            <div class="welcome">
+                <div>
+                    <p class="eyebrow">YOUR PERSONAL GROWTH SPACE</p>
+                    <h1>Let's make today count! <span id="plantStage">🌱</span></h1>
+                    <p>Plan your day, build better habits and achieve your goals.</p>
+                    <p><strong>Growth Level:</strong> <span id="growthXp">0</span> XP <span class="muted" id="growthStatus">(Keep completing tasks to grow your plant!)</span></p>
+                    <p class="date-text" id="currentDate"></p>
+                </div>
+                <div class="welcome-illustration" id="plantEmoji">🌱</div>
+            </div>
+
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">YOUR PROGRESS</p>
+                    <h2>Productivity Overview</h2>
+                </div>
+                <span class="heading-icon">📊</span>
+            </div>
+
+            <div class="summary">
+                <article class="stat-card">
+                    <div class="stat-icon purple">📋</div>
+                    <p>Total Activities</p>
+                    <h2 id="total">0</h2>
+                    <span>All your activities</span>
+                </article>
+
+                <article class="stat-card">
+                    <div class="stat-icon green">✓</div>
+                    <p>Completed</p>
+                    <h2 id="completed">0</h2>
+                    <span>Successfully completed</span>
+                </article>
+
+                <article class="stat-card">
+                    <div class="stat-icon orange">⏳</div>
+                    <p>Pending</p>
+                    <h2 id="pending">0</h2>
+                    <span>Waiting to be done</span>
+                </article>
+            </div>
+
+            <div class="activity-layout">
+                <div class="progress-panel">
+                    <div class="progress-info">
+                        <div>
+                            <h3>Your productivity</h3>
+                            <p id="progressMessage">Start adding activities to track your progress.</p>
+                        </div>
+                        <h2 id="progressPercent">0%</h2>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill" id="progressBar"></div>
+                    </div>
+                </div>
+
+                <!-- ANALYTICS CHART -->
+                <div class="content-card">
+                    <h3>Time Spent by Category</h3>
+                    <div class="chart-container">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STICKY NOTES BOARD -->
+            <section class="sticky-notes-wrapper" style="margin-top: 35px;">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">YOUR THOUGHTS</p>
+                        <h2>Sticky Notes 📌</h2>
+                        <p class="muted">Pin your ideas, reminders, and quick thoughts.</p>
+                    </div>
+                    <button id="addStickyBtn" class="primary-btn">＋ New Note</button>
+                </div>
+
+                <div id="stickyNotesBoard" class="sticky-board">
+                    <!-- Sticky notes will be injected here by JS -->
+                </div>
+            </section>
+        </section>
+
+        <!-- PLANNER AND ACTIVITIES PAGE -->
+        <section class="page" id="plannerPage">
+
+            <div class="page-intro">
+                <p class="eyebrow">PLAN AND ORGANIZE</p>
+                <h1>Your Weekly Planner 📅</h1>
+                <p>Organize your week and keep track of everything you need to do.</p>
+            </div>
+
+            <!-- WEEKLY PLANNER -->
+            <section class="content-card weekly-planner">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">STAY ORGANIZED</p>
+                        <h2>This Week</h2>
+                        <p class="muted">Your activities organized by date.</p>
+                    </div>
+                    <span class="heading-icon">🗓️</span>
+                </div>
+
+                <div class="week-summary">
+                    <strong>📆 Plan your week, one day at a time!</strong>
+                    <span id="weekRange"></span>
+                </div>
+
+                <div class="week-grid" id="weekGrid">
+                    <div class="week-day" data-day="Monday"><h3>Monday</h3><div class="week-day-content"></div></div>
+                    <div class="week-day" data-day="Tuesday"><h3>Tuesday</h3><div class="week-day-content"></div></div>
+                    <div class="week-day" data-day="Wednesday"><h3>Wednesday</h3><div class="week-day-content"></div></div>
+                    <div class="week-day" data-day="Thursday"><h3>Thursday</h3><div class="week-day-content"></div></div>
+                    <div class="week-day" data-day="Friday"><h3>Friday</h3><div class="week-day-content"></div></div>
+                    <div class="week-day" data-day="Saturday"><h3>Saturday</h3><div class="week-day-content"></div></div>
+                    <div class="week-day" data-day="Sunday"><h3>Sunday</h3><div class="week-day-content"></div></div>
+                </div>
+            </section>
+
+            <div class="activity-layout">
+
+                <!-- ADD ACTIVITY -->
+                <section class="content-card planner-card">
+                    <div class="section-heading">
+                        <div>
+                            <p class="eyebrow">PLAN YOUR DAY</p>
+                            <h2>Add New Activity</h2>
+                        </div>
+                        <span class="heading-icon">✏️</span>
+                    </div>
+
+                    <form id="activityForm">
+                        <label for="activityName">Activity Name</label>
+                        <input type="text" id="activityName" placeholder="e.g. Complete Java backend" required>
+
+                        <label for="category">Category</label>
+                        <select id="category" required>
+                            <option value="">Select category</option>
+                            <option value="Study">📚 Study</option>
+                            <option value="Fitness">💪 Fitness</option>
+                            <option value="Hobby">🎨 Hobby</option>
+                            <option value="Personal Growth">🌱 Personal Growth</option>
+                            <option value="Self-care">💗 Self-care</option>
+                        </select>
+
+                        <div class="form-row">
+                            <div>
+                                <label for="activityDate">Date</label>
+                                <input type="date" id="activityDate" required>
+                            </div>
+                            <div>
+                                <label for="duration">Duration (min)</label>
+                                <input type="number" id="duration" placeholder="30" min="1" required>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="primary-btn full-btn">＋ Add Activity</button>
+                    </form>
+                </section>
+
+                <!-- MY ACTIVITIES -->
+                <section class="content-card activities-card">
+                    <div class="section-heading" style="margin-bottom: 10px;">
+                        <div>
+                            <p class="eyebrow">YOUR DAILY ROUTINE</p>
+                            <h2>My Activities</h2>
+                        </div>
+                    </div>
+
+                    <input type="text" id="searchActivity" placeholder="🔍 Search activities...">
+
+                    <div class="filter-row">
+                        <select id="filterCategory">
+                            <option value="All">All Categories</option>
+                            <option value="Study">Study</option>
+                            <option value="Fitness">Fitness</option>
+                            <option value="Hobby">Hobby</option>
+                            <option value="Personal Growth">Personal Growth</option>
+                            <option value="Self-care">Self-care</option>
+                        </select>
+
+                        <select id="filterStatus">
+                            <option value="All">All Status</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Pending">Pending</option>
+                        </select>
+                    </div>
+
+                    <div id="activityList">
+                        <p class="empty-message">Your activities will appear here 🌱</p>
+                    </div>
+                </section>
+            </div>
+        </section>
+
+        <!-- GOALS AND FOCUS PAGE -->
+        <section class="page" id="goalsPage">
+
+            <div class="page-intro">
+                <p class="eyebrow">BUILD BETTER HABITS</p>
+                <h1>Grow Every Day 🌱</h1>
+                <p>Set meaningful goals and give your best during every focus session.</p>
+            </div>
+
+            <div class="tools-layout">
+
+                <!-- DAILY GOALS -->
+                <section class="content-card goals-card">
+                    <div class="section-heading">
+                        <div>
+                            <p class="eyebrow">YOUR DAILY TARGETS</p>
+                            <h2>Daily Goals 🎯</h2>
+                            <p class="muted">Small goals, big achievements.</p>
+                        </div>
+                    </div>
+
+                    <form id="goalForm" class="goal-form">
+                        <input type="text" id="goalInput" placeholder="Enter a new goal..." maxlength="100" required>
+                        <button type="submit" class="primary-btn">＋ Add</button>
+                    </form>
+
+                    <div class="goal-progress-info">
+                        <span id="goalCount">0 of 0 completed</span>
+                        <strong id="goalPercent">0%</strong>
+                    </div>
+
+                    <div class="goal-progress-track">
+                        <div id="goalProgressBar"></div>
+                    </div>
+
+                    <div id="goalList" class="goal-list">
+                        <p class="empty-message">Your goals will appear here.</p>
+                    </div>
+                </section>
+
+                <!-- FOCUS ROOM -->
+                <section class="content-card focus-card">
+                    <div class="section-heading">
+                        <div>
+                            <p class="eyebrow">DEEP WORK SPACE</p>
+                            <h2>Focus Room ⏱️</h2>
+                            <p class="muted">Focus on one task at a time.</p>
+                        </div>
+                    </div>
+
+                    <div class="timer-circle" id="timerCircle">
+                        <div class="timer-display" id="timerDisplay">25:00</div>
+                        <p id="timerMode">Focus Session</p>
+                    </div>
+
+                    <div class="timer-presets">
+                        <button type="button" class="preset-btn active" data-minutes="25" data-mode="Focus Session">25 min</button>
+                        <button type="button" class="preset-btn" data-minutes="5" data-mode="Short Break">5 min</button>
+                        <button type="button" class="preset-btn" data-minutes="15" data-mode="Long Break">15 min</button>
+                    </div>
+
+                    <div class="timer-actions">
+                        <button type="button" id="startTimer" class="primary-btn">Start Focus</button>
+                        <button type="button" id="resetTimer" class="secondary-btn">Reset</button>
+                    </div>
+
+                </section>
+            </div>
+        </section>
+
+        <footer>
+            <p>Made with 💚 for your growth journey.</p>
+            <span>© 2026 GrowMate</span>
+        </footer>
+
+    </main>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
